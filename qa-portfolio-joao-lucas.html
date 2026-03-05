@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Portfolio — João Lucas</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060910;
+    --surface: #0d1320;
+    --surface2: #121a2e;
+    --border: #1a2740;
+    --blue: #3b82f6;
+    --blue-l: #93c5fd;
+    --green: #22c55e;
+    --green-l: #86efac;
+    --yellow: #eab308;
+    --yellow-l: #fde047;
+    --purple: #a855f7;
+    --red: #ef4444;
+    --orange: #f97316;
+    --muted: #3d5570;
+    --text: #94a3b8;
+    --bright: #e2e8f0;
+    --white: #f8fafc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'IBM Plex Mono', monospace; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(160deg, #0d1320 0%, #060910 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: 'QA';
+    position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+    font-size: 200px; font-weight: 900; color: #3b82f606;
+    font-family: 'Fraunces', serif; pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: #3b82f612; border: 1px solid #3b82f630;
+    color: var(--blue-l); border-radius: 100px;
+    padding: 5px 18px; font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 18px;
+  }
+  .hero h1 { font-size: clamp(26px, 4vw, 42px); font-weight: 900; color: var(--white); font-family: 'Fraunces', serif; line-height: 1.1; margin-bottom: 8px; }
+  .hero h1 em { color: var(--green-l); font-style: italic; }
+  .hero-sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .hero-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+  .pill { border-radius: 100px; padding: 5px 14px; font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+  .pill-g { background: #22c55e12; border: 1px solid #22c55e25; color: var(--green); }
+  .pill-b { background: #3b82f612; border: 1px solid #3b82f625; color: var(--blue-l); }
+  .pill-y { background: #eab30812; border: 1px solid #eab30825; color: var(--yellow-l); }
+  .pill-r { background: #ef444412; border: 1px solid #ef444425; color: #fca5a5; }
+
+  /* NAV TABS */
+  .nav-wrap {
+    position: sticky; top: 0; z-index: 100;
+    background: #060910f5; backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    display: flex; gap: 0; overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 14px 18px; font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); cursor: pointer; white-space: nowrap;
+    border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
+  .nav-tab:hover { color: var(--bright); }
+  .nav-tab.active { color: var(--blue-l); border-bottom-color: var(--blue); }
+
+  /* SECTIONS */
+  .section { display: none; max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
+  .section.active { display: block; }
+
+  .section-title {
+    font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900;
+    color: var(--white); margin-bottom: 6px;
+  }
+  .section-sub { font-size: 11px; color: var(--muted); margin-bottom: 28px; }
+
+  /* STATS ROW */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px; text-align: center;
+  }
+  .stat-num { font-size: 28px; font-weight: 700; font-family: 'Fraunces', serif; }
+  .stat-label { font-size: 10px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
+  .stat-g .stat-num { color: var(--green); }
+  .stat-r .stat-num { color: var(--red); }
+  .stat-b .stat-num { color: var(--blue-l); }
+  .stat-y .stat-num { color: var(--yellow-l); }
+
+  /* TEST CASE CARDS */
+  .tc-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+    position: relative;
+  }
+  .tc-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  .tc-pass::before { background: var(--green); }
+  .tc-fail::before { background: var(--red); }
+
+  .tc-hdr {
+    padding: 14px 18px 14px 22px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .tc-hdr:hover { background: #ffffff04; }
+  .tc-id { font-size: 10px; font-weight: 700; color: var(--muted); margin-bottom: 3px; letter-spacing: 1px; }
+  .tc-title { font-size: 13px; font-weight: 700; color: var(--bright); }
+  .tc-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    padding: 4px 12px; border-radius: 100px; flex-shrink: 0;
+  }
+  .badge-pass { background: #22c55e15; border: 1px solid #22c55e30; color: var(--green); }
+  .badge-fail { background: #ef444415; border: 1px solid #ef444430; color: #fca5a5; }
+
+  .tc-body { display: none; padding: 0 22px 18px; border-top: 1px solid var(--border); }
+  .tc-body.open { display: block; }
+  .tc-row { display: grid; grid-template-columns: 160px 1fr; gap: 8px; padding: 10px 0; border-bottom: 1px solid #1a274040; font-size: 12px; }
+  .tc-row:last-child { border-bottom: none; }
+  .tc-key { color: var(--muted); font-size: 11px; }
+  .tc-val { color: var(--bright); }
+  .tc-val ol { padding-left: 16px; }
+  .tc-val ol li { margin-bottom: 3px; color: var(--text); }
+
+  /* BUG REPORT */
+  .bug-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 16px; overflow: hidden;
+    position: relative;
+  }
+  .bug-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  .sev-critical::before { background: #ef4444; }
+  .sev-high::before { background: #f97316; }
+  .sev-medium::before { background: #eab308; }
+  .sev-low::before { background: #3b82f6; }
+
+  .bug-hdr {
+    padding: 16px 20px 16px 24px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .bug-hdr:hover { background: #ffffff04; }
+  .bug-id { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; }
+  .bug-title { font-size: 14px; font-weight: 700; color: var(--bright); }
+  .bug-meta { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .bug-tag {
+    font-size: 10px; font-weight: 700; padding: 3px 10px;
+    border-radius: 100px; letter-spacing: 1px;
+  }
+  .tag-critical { background: #ef444415; border: 1px solid #ef444430; color: #fca5a5; }
+  .tag-high { background: #f9731615; border: 1px solid #f9731630; color: #fdba74; }
+  .tag-medium { background: #eab30815; border: 1px solid #eab30830; color: var(--yellow-l); }
+  .tag-low { background: #3b82f615; border: 1px solid #3b82f630; color: var(--blue-l); }
+  .tag-open { background: #ef444415; border: 1px solid #ef444430; color: #fca5a5; }
+  .tag-info { background: #3b82f615; border: 1px solid #3b82f630; color: var(--blue-l); }
+
+  .bug-body { display: none; padding: 0 24px 20px; border-top: 1px solid var(--border); }
+  .bug-body.open { display: block; }
+  .bug-section { margin-top: 16px; }
+  .bug-section-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .bug-section-content {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px; font-size: 12px; color: var(--bright);
+    line-height: 1.6;
+  }
+  .bug-section-content ol { padding-left: 16px; }
+  .bug-section-content ol li { margin-bottom: 4px; color: var(--text); }
+  .bug-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* RTM TABLE */
+  .rtm-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+  .rtm-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .rtm-table th {
+    background: var(--surface2); color: var(--muted);
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+    padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .rtm-table td {
+    padding: 11px 14px; border-bottom: 1px solid #1a274040;
+    color: var(--text); vertical-align: top;
+  }
+  .rtm-table tr:last-child td { border-bottom: none; }
+  .rtm-table tr:hover td { background: #ffffff03; }
+  .rtm-table td:first-child { color: var(--muted); font-size: 11px; white-space: nowrap; }
+  .rtm-table td:nth-child(2) { color: var(--bright); font-weight: 600; }
+  .pass-dot { color: var(--green); font-weight: 700; }
+  .fail-dot { color: var(--red); font-weight: 700; }
+  .pri-high { color: #fca5a5; }
+  .pri-med { color: var(--yellow-l); }
+  .pri-low { color: var(--blue-l); }
+
+  /* CHEVRON */
+  .chevron { color: var(--muted); font-size: 12px; transition: transform 0.2s; flex-shrink: 0; margin-left: 12px; }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* FILTER BAR */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .filter-btn {
+    font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 100px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--muted); cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+  }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--blue); color: var(--blue-l); background: #3b82f612; }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 48px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">📋 QA Portfolio</div>
+  <h1>Manual Testing<br><em>demo.opencart.com</em></h1>
+  <div class="hero-sub">João Lucas Gonçalves Monteiro · Março 2026</div>
+  <div class="hero-pills">
+    <div class="pill pill-g">15 Test Cases</div>
+    <div class="pill pill-r">5 Bug Reports</div>
+    <div class="pill pill-b">RTM Completa</div>
+    <div class="pill pill-y">demo.opencart.com</div>
+  </div>
+</div>
+
+<nav class="nav-wrap">
+  <div class="nav-tab active" onclick="showTab('tc')">🧪 Test Cases</div>
+  <div class="nav-tab" onclick="showTab('bugs')">🐛 Bug Reports</div>
+  <div class="nav-tab" onclick="showTab('rtm')">📊 RTM</div>
+</nav>
+
+<!-- ═══════════════ TEST CASES ═══════════════ -->
+<div class="section active" id="tab-tc">
+  <div class="section-title">Test Cases</div>
+  <div class="section-sub">15 casos executados manualmente em demo.opencart.com · Março 2026</div>
+
+  <div class="stats-row">
+    <div class="stat-card stat-g"><div class="stat-num">15</div><div class="stat-label">TOTAL</div></div>
+    <div class="stat-card stat-g"><div class="stat-num">12</div><div class="stat-label">PASS</div></div>
+    <div class="stat-card stat-r"><div class="stat-num">3</div><div class="stat-label">FAIL</div></div>
+    <div class="stat-card stat-b"><div class="stat-num">80%</div><div class="stat-label">PASS RATE</div></div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-btn active" onclick="filterTC('all',this)">Todos</div>
+    <div class="filter-btn" onclick="filterTC('pass',this)">✅ Pass</div>
+    <div class="filter-btn" onclick="filterTC('fail',this)">❌ Fail</div>
+    <div class="filter-btn" onclick="filterTC('login',this)">Login</div>
+    <div class="filter-btn" onclick="filterTC('search',this)">Pesquisa</div>
+    <div class="filter-btn" onclick="filterTC('cart',this)">Carrinho</div>
+  </div>
+
+  <!-- TC-001 -->
+  <div class="tc-card tc-pass" data-group="login" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-001 · LOGIN</div><div class="tc-title">Login com credenciais válidas</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Conta criada com email e password válidos</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Aceder a demo.opencart.com</li><li>Clicar em "My Account" → "Login"</li><li>Inserir email válido</li><li>Inserir password correcta</li><li>Clicar em "Login"</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Utilizador entra na conta e vê o dashboard</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Utilizador entrou com sucesso e visualiza o dashboard "My Account" com opções de Orders, Address Book e Logout</div></div>
+    </div>
+  </div>
+
+  <!-- TC-002 -->
+  <div class="tc-card tc-pass" data-group="login" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-002 · LOGIN</div><div class="tc-title">Login com password incorrecta</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Conta existente no sistema</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Aceder à página de login</li><li>Inserir email válido</li><li>Inserir password errada</li><li>Clicar em "Login"</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Mensagem de erro a indicar credenciais inválidas</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Mensagem: "Warning: No match for E-Mail Address and/or Password."</div></div>
+    </div>
+  </div>
+
+  <!-- TC-003 -->
+  <div class="tc-card tc-fail" data-group="login" data-status="fail">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-003 · LOGIN</div><div class="tc-title">Login com email sem formato válido</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-fail">❌ FAIL</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Aceder à página de login</li><li>Inserir "emailsemarroba" no campo email</li><li>Inserir qualquer password</li><li>Clicar em "Login"</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Erro de validação no campo email</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Formulário foi submetido sem validação do browser; o servidor processou o pedido e retornou "Warning: No match for E-Mail Address and/or Password." — sem validação de formato no lado do cliente</div></div>
+    </div>
+  </div>
+
+  <!-- TC-004 -->
+  <div class="tc-card tc-fail" data-group="login" data-status="fail">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-004 · LOGIN</div><div class="tc-title">Login com campos vazios</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-fail">❌ FAIL</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Aceder à página de login</li><li>Deixar email e password em branco</li><li>Clicar em "Login"</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Validação de campos obrigatórios</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Formulário foi submetido com campos vazios sem qualquer validação; o servidor retornou "Warning: No match for E-Mail Address and/or Password." — sem validação de campos obrigatórios no lado do cliente</div></div>
+    </div>
+  </div>
+
+  <!-- TC-005 -->
+  <div class="tc-card tc-pass" data-group="login" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-005 · LOGIN</div><div class="tc-title">Login com email de utilizador inexistente</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Aceder à página de login</li><li>Inserir email inexistente no sistema</li><li>Inserir qualquer password</li><li>Clicar em "Login"</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Mensagem genérica sem revelar se o email existe (segurança)</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Mensagem genérica "Warning: No match for E-Mail Address and/or Password." — não revela se o email existe ✅ Comportamento seguro</div></div>
+    </div>
+  </div>
+
+  <!-- TC-006 -->
+  <div class="tc-card tc-pass" data-group="search" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-006 · PESQUISA</div><div class="tc-title">Pesquisa com termo válido existente</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Na barra de pesquisa escrever "phone"</li><li>Premir Enter ou clicar na lupa</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Lista de produtos relacionados aparece</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Página de resultados exibiu produtos relacionados com "phone", incluindo imagem, nome e preço</div></div>
+    </div>
+  </div>
+
+  <!-- TC-007 -->
+  <div class="tc-card tc-pass" data-group="search" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-007 · PESQUISA</div><div class="tc-title">Pesquisa com termo inexistente</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Na barra de pesquisa escrever "xyzabcdef123"</li><li>Premir Enter</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Mensagem "There is no product that matches the search criteria"</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Sistema exibiu mensagem "There is no product that matches the search criteria" conforme esperado</div></div>
+    </div>
+  </div>
+
+  <!-- TC-008 -->
+  <div class="tc-card tc-pass" data-group="search" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-008 · PESQUISA</div><div class="tc-title">Pesquisa com campo vazio</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Deixar a barra de pesquisa vazia</li><li>Clicar na lupa ou premir Enter</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Mensagem de aviso ou lista de produtos</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Sistema redirecionou para página de pesquisa sem erro de sistema — comportamento estável</div></div>
+    </div>
+  </div>
+
+  <!-- TC-009 -->
+  <div class="tc-card tc-pass" data-group="search" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-009 · PESQUISA</div><div class="tc-title">Pesquisa com caracteres especiais</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Na barra de pesquisa escrever "@#$%"</li><li>Premir Enter</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Nenhum produto encontrado, sem erro de sistema</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Sistema tratou os caracteres especiais sem gerar erro — exibiu mensagem "There is no product that matches the search criteria"</div></div>
+    </div>
+  </div>
+
+  <!-- TC-010 -->
+  <div class="tc-card tc-pass" data-group="search" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-010 · PESQUISA</div><div class="tc-title">Pesquisa com nome parcial de produto</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Na barra de pesquisa escrever "ipho"</li><li>Premir Enter</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Produtos com "iphone" aparecem nos resultados</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Sistema encontrou o produto "iPhone" ao pesquisar o termo parcial "ipho" — pesquisa por substring funciona correctamente</div></div>
+    </div>
+  </div>
+
+  <!-- TC-011 -->
+  <div class="tc-card tc-pass" data-group="cart" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-011 · CARRINHO</div><div class="tc-title">Adicionar produto ao carrinho</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Nenhuma</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Pesquisar por "MacBook"</li><li>Clicar no produto</li><li>Clicar em "Add to Cart"</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Produto adicionado, contador do carrinho actualiza</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Produto adicionado com sucesso; contador actualizou para "1 item(s)" e apareceu mensagem de confirmação verde</div></div>
+    </div>
+  </div>
+
+  <!-- TC-012 -->
+  <div class="tc-card tc-pass" data-group="cart" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-012 · CARRINHO</div><div class="tc-title">Ver produtos no carrinho</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Ter produto no carrinho</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Clicar no ícone do carrinho no topo</li><li>Ver lista de produtos</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Produtos com preço e quantidade correctos</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Dropdown do carrinho exibiu o produto com nome, quantidade e preço unitário correctos</div></div>
+    </div>
+  </div>
+
+  <!-- TC-013 -->
+  <div class="tc-card tc-pass" data-group="cart" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-013 · CARRINHO</div><div class="tc-title">Remover produto do carrinho</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Ter produto no carrinho</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Abrir o carrinho</li><li>Clicar no botão de remover (X) ao lado do produto</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Produto removido, carrinho actualiza</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Produto removido com sucesso; carrinho actualizou para "0 item(s) - $0.00" imediatamente</div></div>
+    </div>
+  </div>
+
+  <!-- TC-014 -->
+  <div class="tc-card tc-pass" data-group="cart" data-status="pass">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-014 · CARRINHO</div><div class="tc-title">Alterar quantidade no carrinho</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Ter produto no carrinho</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Abrir o carrinho completo via "View Cart"</li><li>Alterar a quantidade para 2</li><li>Clicar em "Update"</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Quantidade e preço total actualizam correctamente</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Quantidade actualizada para 2 e o preço total foi recalculado automaticamente de forma correcta</div></div>
+    </div>
+  </div>
+
+  <!-- TC-015 -->
+  <div class="tc-card tc-fail" data-group="cart" data-status="fail">
+    <div class="tc-hdr" onclick="togTC(this)">
+      <div><div class="tc-id">TC-015 · CARRINHO</div><div class="tc-title">Checkout sem estar logado</div></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tc-badge badge-pass">✅ PASS</span><span class="chevron">▼</span></div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-row"><div class="tc-key">Pré-condição</div><div class="tc-val">Utilizador não está logado, produto no carrinho</div></div>
+      <div class="tc-row"><div class="tc-key">Passos</div><div class="tc-val"><ol><li>Ter produto no carrinho sem estar logado</li><li>Clicar em "Checkout"</li></ol></div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Esperado</div><div class="tc-val">Sistema pede login ou registo antes de continuar</div></div>
+      <div class="tc-row"><div class="tc-key">Resultado Obtido</div><div class="tc-val">Sistema redirecionou para página de checkout com opção obrigatória de login ou criação de conta</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ BUG REPORTS ═══════════════ -->
+<div class="section" id="tab-bugs">
+  <div class="section-title">Bug Reports</div>
+  <div class="section-sub">5 bugs identificados durante execução dos testes · demo.opencart.com · Março 2026</div>
+
+  <div class="stats-row">
+    <div class="stat-card stat-r"><div class="stat-num">1</div><div class="stat-label">CRÍTICO</div></div>
+    <div class="stat-card" style="border-color:#f9731640"><div class="stat-num" style="color:#fdba74">1</div><div class="stat-label">ALTO</div></div>
+    <div class="stat-card stat-y"><div class="stat-num">2</div><div class="stat-label">MÉDIO</div></div>
+    <div class="stat-card stat-b"><div class="stat-num">1</div><div class="stat-label">BAIXO</div></div>
+  </div>
+
+  <!-- BUG-001 -->
+  <div class="bug-card sev-critical">
+    <div class="bug-hdr" onclick="togBug(this)">
+      <div>
+        <div class="bug-id">BUG-001 · LOGIN</div>
+        <div class="bug-title">Sem limite de tentativas de login — vulnerabilidade de segurança</div>
+        <div class="bug-meta">
+          <span class="bug-tag tag-critical">🔴 CRÍTICO</span>
+          <span class="bug-tag tag-open">ABERTO</span>
+          <span class="bug-tag tag-info">Segurança</span>
+        </div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-grid">
+        <div class="bug-section">
+          <div class="bug-section-label">Descrição</div>
+          <div class="bug-section-content">O sistema não limita o número de tentativas de login falhadas. É possível tentar infinitas combinações de password sem ser bloqueado, banido ou apresentar CAPTCHA. Isso expõe a aplicação a ataques de força bruta.</div>
+        </div>
+        <div class="bug-section">
+          <div class="bug-section-label">Impacto</div>
+          <div class="bug-section-content">Um atacante pode automatizar milhares de tentativas de login por segundo, comprometendo contas de utilizadores. Em e-commerce, isso representa risco directo de fraude e acesso não autorizado a dados de pagamento.</div>
+        </div>
+      </div>
+      <div class="bug-section">
+        <div class="bug-section-label">Passos para Reproduzir</div>
+        <div class="bug-section-content"><ol><li>Aceder a demo.opencart.com/index.php?route=account/login</li><li>Inserir email válido com password errada</li><li>Clicar em "Login" repetidamente (10+ vezes)</li><li>Observar: nenhum bloqueio, CAPTCHA ou aviso é apresentado</li></ol></div>
+      </div>
+      <div class="bug-grid">
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Esperado</div>
+          <div class="bug-section-content">Após 3–5 tentativas falhadas, o sistema deve bloquear temporariamente o acesso ou exigir CAPTCHA</div>
+        </div>
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Obtido</div>
+          <div class="bug-section-content">Sistema aceita tentativas ilimitadas sem qualquer mecanismo de protecção</div>
+        </div>
+      </div>
+      <div class="bug-section">
+        <div class="bug-section-label">Sugestão de Correção</div>
+        <div class="bug-section-content">Implementar rate limiting por IP (máx. 5 tentativas/15 min) e CAPTCHA após 3 falhas consecutivas. Considerar autenticação de dois factores (2FA).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-002 -->
+  <div class="bug-card sev-high">
+    <div class="bug-hdr" onclick="togBug(this)">
+      <div>
+        <div class="bug-id">BUG-002 · PESQUISA</div>
+        <div class="bug-title">Pesquisa com campo vazio retorna mensagem incorrecta</div>
+        <div class="bug-meta">
+          <span class="bug-tag tag-high">🟠 ALTO</span>
+          <span class="bug-tag tag-open">ABERTO</span>
+          <span class="bug-tag tag-info">UX / Funcionalidade</span>
+        </div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-section">
+        <div class="bug-section-label">Descrição</div>
+        <div class="bug-section-content">Ao pesquisar com campo vazio, o sistema exibe "There is no product that matches the search criteria" em vez de uma mensagem orientativa como "Por favor introduza um termo de pesquisa". O utilizador fica confuso, pensando que a loja não tem produtos.</div>
+      </div>
+      <div class="bug-section">
+        <div class="bug-section-label">Passos para Reproduzir</div>
+        <div class="bug-section-content"><ol><li>Aceder a demo.opencart.com</li><li>Deixar a barra de pesquisa vazia</li><li>Clicar na lupa ou premir Enter</li><li>Observar a mensagem exibida</li></ol></div>
+      </div>
+      <div class="bug-grid">
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Esperado</div>
+          <div class="bug-section-content">Mensagem: "Por favor introduza um termo de pesquisa" ou todos os produtos são listados</div>
+        </div>
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Obtido</div>
+          <div class="bug-section-content">Mensagem: "There is no product that matches the search criteria" — enganosa para o utilizador</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-003 -->
+  <div class="bug-card sev-medium">
+    <div class="bug-hdr" onclick="togBug(this)">
+      <div>
+        <div class="bug-id">BUG-003 · CARRINHO</div>
+        <div class="bug-title">Mensagem de confirmação de adição ao carrinho desaparece sem interacção</div>
+        <div class="bug-meta">
+          <span class="bug-tag tag-medium">🟡 MÉDIO</span>
+          <span class="bug-tag tag-open">ABERTO</span>
+          <span class="bug-tag tag-info">UX</span>
+        </div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-section">
+        <div class="bug-section-label">Descrição</div>
+        <div class="bug-section-content">Após adicionar um produto ao carrinho, a mensagem de confirmação verde desaparece automaticamente após poucos segundos sem que o utilizador possa dispensá-la manualmente ou clicar em "Ver carrinho" antes de desaparecer.</div>
+      </div>
+      <div class="bug-section">
+        <div class="bug-section-label">Passos para Reproduzir</div>
+        <div class="bug-section-content"><ol><li>Pesquisar qualquer produto (ex: "MacBook")</li><li>Clicar em "Add to Cart"</li><li>Observar a notificação verde no topo</li><li>Não interagir — a notificação desaparece em ~3 segundos</li></ol></div>
+      </div>
+      <div class="bug-grid">
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Esperado</div>
+          <div class="bug-section-content">Notificação permanece visível até o utilizador a dispensar ou ter tempo suficiente para ler e agir</div>
+        </div>
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Obtido</div>
+          <div class="bug-section-content">Notificação desaparece automaticamente em ~3 segundos, podendo o utilizador não a ter lido</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-004 -->
+  <div class="bug-card sev-medium">
+    <div class="bug-hdr" onclick="togBug(this)">
+      <div>
+        <div class="bug-id">BUG-004 · LOGIN</div>
+        <div class="bug-title">Mensagem de erro de login não diferencia email inválido de password errada</div>
+        <div class="bug-meta">
+          <span class="bug-tag tag-medium">🟡 MÉDIO</span>
+          <span class="bug-tag tag-open">ABERTO</span>
+          <span class="bug-tag tag-info">UX</span>
+        </div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-section">
+        <div class="bug-section-label">Descrição</div>
+        <div class="bug-section-content">A mesma mensagem de erro é exibida tanto para email inexistente como para password incorrecta. Embora isto seja uma boa prática de segurança, a mensagem actual é técnica e pouco amigável para utilizadores comuns.</div>
+      </div>
+      <div class="bug-grid">
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Esperado</div>
+          <div class="bug-section-content">Mensagem clara e amigável: "Email ou password incorrectos. Por favor tente novamente."</div>
+        </div>
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Obtido</div>
+          <div class="bug-section-content">"Warning: No match for E-Mail Address and/or Password." — linguagem técnica e confusa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-005 -->
+  <div class="bug-card sev-low">
+    <div class="bug-hdr" onclick="togBug(this)">
+      <div>
+        <div class="bug-id">BUG-005 · UI</div>
+        <div class="bug-title">Número de telefone de contacto é um placeholder não funcional</div>
+        <div class="bug-meta">
+          <span class="bug-tag tag-low">🔵 BAIXO</span>
+          <span class="bug-tag tag-open">ABERTO</span>
+          <span class="bug-tag tag-info">Conteúdo</span>
+        </div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-section">
+        <div class="bug-section-label">Descrição</div>
+        <div class="bug-section-content">O número de telefone exibido no topo da página ("123456789") é claramente um dado de teste/placeholder e não um contacto real. Em ambiente de produção, isto indicaria um dado de configuração por preencher.</div>
+      </div>
+      <div class="bug-grid">
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Esperado</div>
+          <div class="bug-section-content">Número de contacto real ou campo removido se não aplicável</div>
+        </div>
+        <div class="bug-section">
+          <div class="bug-section-label">Resultado Obtido</div>
+          <div class="bug-section-content">Exibido "📞 123456789" — número sequencial claramente fictício</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ RTM ═══════════════ -->
+<div class="section" id="tab-rtm">
+  <div class="section-title">Requirement Traceability Matrix</div>
+  <div class="section-sub">Rastreabilidade entre requisitos, test cases e resultados · demo.opencart.com · Março 2026</div>
+
+  <div class="stats-row">
+    <div class="stat-card stat-b"><div class="stat-num">8</div><div class="stat-label">REQUISITOS</div></div>
+    <div class="stat-card stat-g"><div class="stat-num">15</div><div class="stat-label">TEST CASES</div></div>
+    <div class="stat-card stat-g"><div class="stat-num">12</div><div class="stat-label">PASS</div></div>
+    <div class="stat-card stat-r"><div class="stat-num">5</div><div class="stat-label">BUGS</div></div>
+  </div>
+
+  <div class="rtm-wrap">
+    <table class="rtm-table">
+      <thead>
+        <tr>
+          <th>REQ ID</th>
+          <th>Requisito</th>
+          <th>TC Associado</th>
+          <th>Módulo</th>
+          <th>Prioridade</th>
+          <th>Resultado</th>
+          <th>Bug</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>REQ-001</td>
+          <td>Sistema deve permitir login com credenciais válidas</td>
+          <td>TC-001</td>
+          <td>Login</td>
+          <td><span class="pri-high">Alta</span></td>
+          <td><span class="pass-dot">✅ Pass</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>REQ-002</td>
+          <td>Sistema deve rejeitar credenciais inválidas com mensagem de erro</td>
+          <td>TC-002, TC-003, TC-004, TC-005</td>
+          <td>Login</td>
+          <td><span class="pri-high">Alta</span></td>
+          <td><span class="pass-dot">✅ Pass</span></td>
+          <td><a style="color:var(--red);text-decoration:none">BUG-001, BUG-004</a></td>
+        </tr>
+        <tr>
+          <td>REQ-003</td>
+          <td>Sistema deve retornar produtos para termos de pesquisa válidos</td>
+          <td>TC-006, TC-010</td>
+          <td>Pesquisa</td>
+          <td><span class="pri-high">Alta</span></td>
+          <td><span class="pass-dot">✅ Pass</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>REQ-004</td>
+          <td>Sistema deve tratar pesquisas sem resultados com mensagem adequada</td>
+          <td>TC-007, TC-008, TC-009</td>
+          <td>Pesquisa</td>
+          <td><span class="pri-med">Média</span></td>
+          <td><span class="pass-dot">✅ Pass</span></td>
+          <td><a style="color:#fdba74;text-decoration:none">BUG-002</a></td>
+        </tr>
+        <tr>
+          <td>REQ-005</td>
+          <td>Utilizador deve poder adicionar produtos ao carrinho</td>
+          <td>TC-011</td>
+          <td>Carrinho</td>
+          <td><span class="pri-high">Alta</span></td>
+          <td><span class="pass-dot">✅ Pass</span></td>
+          <td><a style="color:var(--yellow-l);text-decoration:none">BUG-003</a></td>
+        </tr>
+        <tr>
+          <td>REQ-006</td>
+          <td>Utilizador deve poder visualizar e gerir o carrinho</td>
+          <td>TC-012, TC-013, TC-014</td>
+          <td>Carrinho</td>
+          <td><span class="pri-high">Alta</span></td>
+          <td><span class="pass-dot">✅ Pass</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>REQ-007</td>
+          <td>Checkout deve exigir autenticação do utilizador</td>
+          <td>TC-015</td>
+          <td>Checkout</td>
+          <td><span class="pri-high">Alta</span></td>
+          <td><span class="pass-dot">✅ Pass</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>REQ-008</td>
+          <td>Interface deve exibir informações de contacto correctas</td>
+          <td>—</td>
+          <td>UI Geral</td>
+          <td><span class="pri-low">Baixa</span></td>
+          <td><span class="fail-dot">❌ Fail</span></td>
+          <td><a style="color:var(--blue-l);text-decoration:none">BUG-005</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;">
+    <div style="font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">Legenda</div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:12px;">
+      <div><span class="pass-dot">✅</span> Teste passou — requisito coberto</div>
+      <div><span class="fail-dot">❌</span> Teste falhou — requisito em risco</div>
+      <div style="color:var(--red)">Alta</div><div style="color:var(--yellow-l)">Média</div><div style="color:var(--blue-l)">Baixa</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function togTC(hdr) {
+    const body = hdr.nextElementSibling;
+    const chev = hdr.querySelector('.chevron');
+    body.classList.toggle('open');
+    chev.classList.toggle('open');
+  }
+
+  function togBug(hdr) {
+    const body = hdr.nextElementSibling;
+    const chev = hdr.querySelector('.chevron');
+    body.classList.toggle('open');
+    chev.classList.toggle('open');
+  }
+
+  function filterTC(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tc-card').forEach(card => {
+      if (type === 'all') { card.style.display = ''; return; }
+      if (type === 'pass' || type === 'fail') {
+        card.style.display = card.dataset.status === type ? '' : 'none';
+      } else {
+        card.style.display = card.dataset.group === type ? '' : 'none';
+      }
+    });
+  }
+</script>
+</body>
+</html>
